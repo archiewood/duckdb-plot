@@ -20,10 +20,24 @@ inline void PlotScalarFun(DataChunk &args, ExpressionState &state, Vector &resul
         });
 }
 
+inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result) {
+    auto &input_vector = args.data[0];
+    UnaryExecutor::Execute<int32_t, string_t>(
+        input_vector, result, args.size(),
+        [&](int32_t input) {
+            string bar_string(input, '*');
+            return StringVector::AddString(result, bar_string);
+        });
+}
+
 static void LoadInternal(DatabaseInstance &instance) {
     // Register a scalar function
     auto plot_scalar_function = ScalarFunction("plot", {LogicalType::VARCHAR}, LogicalType::VARCHAR, PlotScalarFun);
     ExtensionUtil::RegisterFunction(instance, plot_scalar_function);
+
+    // Register the Bar function
+    auto bar_scalar_function = ScalarFunction("plot_bar", {LogicalType::INTEGER}, LogicalType::VARCHAR, BarScalarFun);
+    ExtensionUtil::RegisterFunction(instance, bar_scalar_function);
 }
 
 void PlotExtension::Load(DuckDB &db) {
