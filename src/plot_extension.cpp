@@ -20,13 +20,24 @@ inline void PlotScalarFun(DataChunk &args, ExpressionState &state, Vector &resul
         });
 }
 
+// Function to left pad a string
+std::string LeftPad(const std::string &str, size_t width) {
+    if (str.length() >= width) {
+        return str;
+    }
+    return std::string(width - str.length(), ' ') + str;
+}
+
 inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result) {
-    auto &input_vector = args.data[0];
-    UnaryExecutor::Execute<int32_t, string_t>(
-        input_vector, result, args.size(),
-        [&](int32_t input) {
-            string bar_string(input, '*');
-            return StringVector::AddString(result, bar_string);
+    auto &value_vector = args.data[0];
+    auto &label_vector = args.data[1];
+    static const char *Block = "\xE2\x96\x88";
+    BinaryExecutor::Execute<int32_t, string_t, string_t>(
+        value_vector, label_vector, result, args.size(),
+        [&](int32_t value, string_t label) {
+            string padded_label = LeftPad(label.GetString(), 22); // adjust width as needed
+            string bar_string(value, '#');
+            return StringVector::AddString(result, padded_label + " │" + bar_string + " " + std::to_string(value));
         });
 }
 
@@ -36,7 +47,7 @@ static void LoadInternal(DatabaseInstance &instance) {
     ExtensionUtil::RegisterFunction(instance, plot_scalar_function);
 
     // Register the Bar function
-    auto bar_scalar_function = ScalarFunction("plot_bar", {LogicalType::INTEGER}, LogicalType::VARCHAR, BarScalarFun);
+    auto bar_scalar_function = ScalarFunction("plot_bar", {LogicalType::INTEGER, LogicalType::VARCHAR}, LogicalType::VARCHAR, BarScalarFun);
     ExtensionUtil::RegisterFunction(instance, bar_scalar_function);
 }
 
