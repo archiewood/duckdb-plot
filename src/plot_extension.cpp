@@ -28,6 +28,14 @@ std::string LeftPad(const std::string &str, size_t width) {
     return std::string(width - str.length(), ' ') + str;
 }
 
+std::string repeat_string(const std::string &str, int times) {
+    std::string result;
+    for (int i = 0; i < times; ++i) {
+        result += str;
+    }
+    return result;
+}
+
 inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result) {
     auto &value_vector = args.data[0];
     auto &label_vector = args.data[1];
@@ -36,7 +44,7 @@ inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result
         value_vector, label_vector, result, args.size(),
         [&](int32_t value, string_t label) {
             string padded_label = LeftPad(label.GetString(), 22); // adjust width as needed
-            string bar_string(value, '#');
+            std::string bar_string = repeat_string(Block, value);
             return StringVector::AddString(result, padded_label + " │" + bar_string + " " + std::to_string(value));
         });
 }
