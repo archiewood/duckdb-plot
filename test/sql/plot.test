@@ -1,0 +1,23 @@
+# name: test/sql/plot.test
+# description: test plot extension
+# group: [plot]
+
+# Before we load the extension, this will fail
+statement error
+SELECT plot('Sam');
+----
+Catalog Error: Scalar Function with name plot does not exist!
+
+# Require statement will ensure this test is run with this extension loaded
+require plot
+
+# Confirm the extension works
+query I
+SELECT plot('Sam');
+----
+Plot Sam 🐥
+
+query I
+SELECT plot_openssl_version('Michael');
+----
+<REGEX>:Plot Michael, my linked OpenSSL version is OpenSSL.*
