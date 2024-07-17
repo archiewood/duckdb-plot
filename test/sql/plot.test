@@ -13,11 +13,6 @@ require plot
 
 # Confirm the extension works
 query I
-SELECT plot('Sam');
+SELECT plot_bar(10,'DuckDB');
 ----
-Plot Sam 🐥
-
-query I
-SELECT plot_openssl_version('Michael');
-----
-<REGEX>:Plot Michael, my linked OpenSSL version is OpenSSL.*
+                DuckDB │██████████ 10
