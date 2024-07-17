@@ -37,13 +37,13 @@ To run the extension code, simply start the shell with `./build/release/duckdb`.
 
 Now we can use the features from the extension directly in DuckDB. The template contains a single scalar function `plot()` that takes a string arguments and returns a string:
 ```
-D select plot('Jane') as result;
-┌───────────────┐
-│    result     │
-│    varchar    │
-├───────────────┤
-│ Plot Jane 🐥 │
-└───────────────┘
+D select plot_bar(10, 'DuckDB') as "Orders by Category";
+┌───────────────────────────────────────┐
+│          Orders by Category           │
+│                varchar                │
+├───────────────────────────────────────┤
+│                 DuckDB │██████████ 10 │
+└───────────────────────────────────────┘
 ```
 
 ## Running the tests

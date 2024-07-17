@@ -4,9 +4,9 @@
 
 # Before we load the extension, this will fail
 statement error
-SELECT plot('Sam');
+SELECT plot_bar(10,'DuckDB');
 ----
-Catalog Error: Scalar Function with name plot does not exist!
+Catalog Error: Scalar Function with name plot_bar does not exist!
 
 # Require statement will ensure this test is run with this extension loaded
 require plot
