@@ -11,14 +11,6 @@
 
 namespace duckdb {
 
-inline void PlotScalarFun(DataChunk &args, ExpressionState &state, Vector &result) {
-    auto &name_vector = args.data[0];
-    UnaryExecutor::Execute<string_t, string_t>(
-	    name_vector, result, args.size(),
-	    [&](string_t name) {
-			return StringVector::AddString(result, "Plot "+name.GetString()+" 🐥");;
-        });
-}
 
 // Function to left pad a string
 std::string LeftPad(const std::string &str, size_t width) {
@@ -39,7 +31,7 @@ std::string repeat_string(const std::string &str, int times) {
 inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result) {
     auto &value_vector = args.data[0];
     auto &label_vector = args.data[1];
-    static const char *Block = "\xE2\x96\x88";
+    static const char *Block = "█";
     BinaryExecutor::Execute<int32_t, string_t, string_t>(
         value_vector, label_vector, result, args.size(),
         [&](int32_t value, string_t label) {
@@ -50,9 +42,6 @@ inline void BarScalarFun(DataChunk &args, ExpressionState &state, Vector &result
 }
 
 static void LoadInternal(DatabaseInstance &instance) {
-    // Register a scalar function
-    auto plot_scalar_function = ScalarFunction("plot", {LogicalType::VARCHAR}, LogicalType::VARCHAR, PlotScalarFun);
-    ExtensionUtil::RegisterFunction(instance, plot_scalar_function);
 
     // Register the Bar function
     auto bar_scalar_function = ScalarFunction("plot_bar", {LogicalType::INTEGER, LogicalType::VARCHAR}, LogicalType::VARCHAR, BarScalarFun);
